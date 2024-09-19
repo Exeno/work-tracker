@@ -1,0 +1,133 @@
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    color: #333;
+}
+h1, h2, h3, h4 {
+    color: #333;
+}
+a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+/* Header */
+.header {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+.header h1 {
+    font-size: 28px;
+    margin: 0;
+}
+
+/* Container */
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Entry Form */
+.entry-form {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.entry-form label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+}
+.entry-form input,
+.entry-form textarea,
+.entry-form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.entry-form textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+/* Buttons */
+.button {
+    padding: 12px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+.button:hover {
+    background-color: #0056b3;
+}
+.button.delete {
+    background-color: #dc3545;
+}
+.button.delete:hover {
+    background-color: #c82333;
+}
+.button.clear-all {
+    background-color: #6c757d;
+}
+.button.clear-all:hover {
+    background-color: #5a6268;
+}
+
+/* Entry List */
+.entry-list {
+    margin-bottom: 40px;
+}
+.entry-item {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border-left: 5px solid #007BFF;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.entry-item h3 {
+    margin-top: 0;
+}
+.entry-item p {
+    margin: 5px 0;
+}
+.entry-item ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 10px 0;
+}
+.entry-item .total-work-time {
+    font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .entry-form label,
+    .entry-form input,
+    .entry-form button,
+    .entry-form textarea {
+        font-size: 16px;
+    }
+    .button {
+        font-size: 16px;
+    }
+}

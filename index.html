@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Work Tracker App - Simple Circuits</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Ensures mobile responsiveness -->
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="header">
+    <h1>Simple Circuits Work Tracker</h1>
+</div>
+
+<div class="container">
+
+    <div class="entry-form">
+        <h2>Add New Work Entry</h2>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date">
+
+        <label for="hourlyRate">Hourly Rate ($):</label>
+        <input type="number" id="hourlyRate" min="0" step="0.01">
+
+        <h3>Work Segments</h3>
+        <div id="workSegmentsContainer">
+            <label for="workType">Work Type:</label>
+            <select id="workType">
+                <option value="jobsite">JOB SITE</option>
+                <option value="shop">SHOP</option>
+            </select>
+            <label for="segmentStartTime">Start Time:</label>
+            <input type="time" id="segmentStartTime">
+            <label for="segmentEndTime">End Time:</label>
+            <input type="time" id="segmentEndTime">
+            <button class="button" onclick="addWorkSegment()">Add Work Segment</button>
+            <ul id="workSegmentsList"></ul>
+        </div>
+
+        <label for="tookLunch">Did you take a lunch break?</label>
+        <select id="tookLunch" onchange="toggleLunchDuration()">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+
+        <div id="lunchDurationContainer" style="display: none;">
+            <label for="lunchDuration">Lunch Duration (minutes):</label>
+            <input type="number" id="lunchDuration" min="1" max="180" value="30"><!-- Max lunch duration increased to 180 -->
+        </div>
+
+        <label for="projectName">Project Name:</label>
+        <input type="text" id="projectName">
+
+        <label for="clientName">Client Name:</label>
+        <input type="text" id="clientName">
+
+        <label for="notes">Notes:</label>
+        <textarea id="notes" placeholder="Enter any additional notes here..."></textarea>
+
+        <h3>Tasks</h3>
+        <div id="tasksContainer">
+            <input type="text" id="taskDescription" placeholder="Task description">
+            <button class="button" onclick="addTask()">Add Task</button>
+            <ul id="tasksList"></ul>
+        </div>
+
+        <h3>Materials</h3>
+        <div id="materialsContainer">
+            <input type="text" id="materialName" placeholder="Material name">
+            <input type="number" id="materialQuantity" placeholder="Quantity" min="1">
+            <button class="button" onclick="addMaterial()">Add Material</button>
+            <ul id="materialsList"></ul>
+        </div>
+
+        <button class="button" onclick="saveEntry()">Save Work Entry</button>
+    </div>
+
+    <div class="entry-list">
+        <h2>Work Entries</h2>
+        <button class="button clear-all" onclick="clearAllEntries()">Clear All Entries</button>
+        <div id="entriesContainer"></div>
+    </div>
+
+</div>
+
+<!-- Link to external JavaScript file -->
+<script src="script.js"></script>
+
+</body>
+</html>
