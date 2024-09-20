@@ -133,11 +133,6 @@ function saveEntry() {
     var lunchDuration = 0;
     var hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
 
-    if (isNaN(hourlyRate) || hourlyRate <= 0) {
-        alert('Please enter a valid hourly rate.');
-        return;
-    }
-
     if (tookLunch === 'yes') {
         lunchDuration = parseInt(document.getElementById('lunchDuration').value);
         if (isNaN(lunchDuration) || lunchDuration <= 0 || lunchDuration > 180) {
@@ -178,7 +173,10 @@ function saveEntry() {
         return;
     }
 
-    var earnings = totalWorkDuration * hourlyRate;
+    var earnings = 0;
+    if (!isNaN(hourlyRate) && hourlyRate > 0) {
+        earnings = totalWorkDuration * hourlyRate;
+    }
 
     var entry = {
         id: Date.now(),
@@ -212,6 +210,11 @@ function displayEntries() {
             var entry = entries[index];
             var entryDiv = document.createElement('div');
             entryDiv.className = 'entry-item';
+
+            var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'entry-checkbox';
+            entryDiv.appendChild(checkbox);
 
             var h3 = document.createElement('h3');
             h3.textContent = 'Project: ' + entry.projectName;
@@ -294,7 +297,6 @@ function displayEntries() {
                 entryDiv.appendChild(materialsH4);
 
                 var materialsUl = document.createElement('ul');
-                materialsUl.className = 'materials';
                 for (var k = 0; k < entry.materials.length; k++) {
                     var material = entry.materials[k];
                     var li = document.createElement('li');
@@ -337,6 +339,48 @@ function displayEntries() {
             entriesContainer.appendChild(entryDiv);
         })(i);
     }
+}
+
+function sendEmail() {
+    var email = document.getElementById('emailAddress').value;
+    if (!email) {
+        alert('Please enter a valid email address.');
+        return;
+    }
+
+    var selectedEntries = [];
+    var checkboxes = document.querySelectorAll('.entry-checkbox');
+    checkboxes.forEach(function(checkbox, index) {
+        if (checkbox.checked) {
+            selectedEntries.push(entries[index]);
+        }
+    });
+
+    if (selectedEntries.length === 0) {
+        alert('Please select at least one entry to send.');
+        return;
+    }
+
+    var emailContent = formatEntriesForEmail(selectedEntries);
+    window.open('mailto:' + email + '?subject=Work Entries&body=' + encodeURIComponent(emailContent));
+}
+
+function formatEntriesForEmail(entries) {
+    var content = 'Here are the selected work entries:\n\n';
+    entries.forEach(function(entry) {
+        content += 'Project: ' + entry.projectName + '\n';
+        content += 'Client: ' + entry.clientName + '\n';
+        content += 'Date: ' + entry.date + '\n';
+        content += 'Total Work Time: ' + entry.totalWorkDuration.toFixed(2) + ' hours\n';
+        if (entry.earnings) {
+            content += 'Earnings: $' + entry.earnings.toFixed(2) + '\n';
+        }
+        content += 'Tasks: ' + entry.tasks.join(', ') + '\n';
+        content += 'Materials: ' + entry.materials.map(material => material.name + ' (Qty: ' + material.quantity + ')').join(', ') + '\n';
+        content += 'Notes: ' + entry.notes + '\n';
+        content += '--------------------------\n';
+    });
+    return content;
 }
 
 function clearForm() {

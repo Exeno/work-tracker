@@ -87,6 +87,7 @@ a {
 }
 .button.clear-all {
     background-color: #6c757d;
+    margin-bottom: 20px; /* Added margin to move it higher */
 }
 .button.clear-all:hover {
     background-color: #5a6268;
@@ -119,15 +120,25 @@ a {
     font-weight: bold;
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments for mobile */
 @media (max-width: 600px) {
-    .entry-form label,
+    .container {
+        padding: 10px;
+    }
     .entry-form input,
-    .entry-form button,
-    .entry-form textarea {
-        font-size: 16px;
+    .entry-form textarea,
+    .entry-form select {
+        font-size: 18px;
+        padding: 12px;
     }
     .button {
-        font-size: 16px;
+        padding: 16px;
+        font-size: 18px;
+    }
+    .entry-list {
+        padding: 0 10px;
+    }
+    .entry-item {
+        padding: 15px;
     }
 }
