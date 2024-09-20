@@ -362,35 +362,52 @@ function sendEmail() {
     }
 
     function formatEntriesForEmail(entries) {
-    var content = "Here are the selected work entries:\n\n";
-    
-    entries.forEach(function(entry) {
+    let content = "Here are the selected work entries:\n\n";
+
+    entries.forEach(function (entry) {
         content += `Project: ${entry.projectName}\n`;
         content += `Client: ${entry.clientName}\n`;
         content += `Date: ${entry.date}\n`;
+
+        if (!isNaN(entry.hourlyRate) && entry.hourlyRate > 0) {
+            content += `Hourly Rate: $${entry.hourlyRate.toFixed(2)}\n`;
+        }
+
+        if (entry.tookLunch === 'yes') {
+            content += `Lunch Break: ${entry.lunchDuration} minutes\n`;
+        }
+
         content += `Total Work Time: ${entry.totalWorkDuration.toFixed(2)} hours\n`;
-        if (entry.earnings) {
+        content += `SHOP Time: ${entry.shopDuration.toFixed(2)} hours\n`;
+        content += `JOB SITE Time: ${entry.jobsiteDuration.toFixed(2)} hours\n`;
+
+        if (entry.earnings > 0) {
             content += `Earnings: $${entry.earnings.toFixed(2)}\n`;
         }
-        content += `Notes: ${entry.notes || "None"}\n\n`;
 
-        // Add tasks
-        content += "Tasks:\n";
-        entry.tasks.forEach(task => {
-            content += `• ${task}\n`;
+        content += `Notes: ${entry.notes || 'None'}\n`;
+
+        content += `\nWork Segments:\n`;
+        entry.workSegments.forEach(function (segment) {
+            content += `    ${segment.workType.toUpperCase()}: ${segment.startTime} - ${segment.endTime}\n`;
         });
-        
-        // Add materials
-        content += "\nMaterials:\n";
-        entry.materials.forEach(material => {
-            content += `• ${material.name} (Qty: ${material.quantity})\n`;
+
+        content += `\nTasks:\n`;
+        entry.tasks.forEach(function (task) {
+            content += `    • ${task}\n`;
         });
-        
-        content += "--------------------------\n\n";
+
+        content += `\nMaterials:\n`;
+        entry.materials.forEach(function (material) {
+            content += `    • ${material.name}: ${material.quantity}\n`;
+        });
+
+        content += "\n--------------------------\n\n";
     });
 
     return content;
 }
+
 
 
 function clearForm() {
