@@ -86,7 +86,6 @@ function addWorkSegment() {
         return;
     }
 
-    // Validate that end time is after start time
     var duration = calculateWorkDuration(segmentStartTime, segmentEndTime, 0);
     if (duration < 0) {
         alert('End time must be after start time.');
@@ -102,7 +101,6 @@ function addWorkSegment() {
 
     displayWorkSegments();
 
-    // Clear input fields
     document.getElementById('segmentStartTime').value = '';
     document.getElementById('segmentEndTime').value = '';
 }
@@ -133,10 +131,6 @@ function saveEntry() {
     var lunchDuration = 0;
     var hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
 
-    if (isNaN(hourlyRate) || hourlyRate <= 0) {
-        hourlyRate = 0; // Hourly rate is optional, default to 0 if not provided
-    }
-
     if (tookLunch === 'yes') {
         lunchDuration = parseInt(document.getElementById('lunchDuration').value);
         if (isNaN(lunchDuration) || lunchDuration <= 0 || lunchDuration > 180) {
@@ -155,7 +149,6 @@ function saveEntry() {
         return;
     }
 
-    // Calculate total work time in hours
     var totalWorkDuration = 0;
     var shopDuration = 0;
     var jobsiteDuration = 0;
@@ -171,11 +164,6 @@ function saveEntry() {
 
     totalWorkDuration = shopDuration + jobsiteDuration;
     totalWorkDuration -= lunchDuration / 60;
-
-    if (totalWorkDuration < 0) {
-        alert('Total work duration cannot be negative after subtracting lunch.');
-        return;
-    }
 
     var earnings = totalWorkDuration * hourlyRate;
 
@@ -212,12 +200,10 @@ function displayEntries() {
             var entryDiv = document.createElement('div');
             entryDiv.className = 'entry-item';
 
-            // Checkbox for selecting entries
             var checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.className = 'entry-checkbox';
             checkbox.setAttribute('data-index', index);
-            checkbox.style.marginRight = '10px'; // Adding space between checkbox and text
             entryDiv.appendChild(checkbox);
 
             var h3 = document.createElement('h3');
@@ -267,7 +253,6 @@ function displayEntries() {
                 entryDiv.appendChild(notesP);
             }
 
-            // Display work segments
             var segmentsH4 = document.createElement('h4');
             segmentsH4.textContent = 'Work Segments:';
             entryDiv.appendChild(segmentsH4);
@@ -313,7 +298,6 @@ function displayEntries() {
                 entryDiv.appendChild(materialsUl);
             }
 
-            // Edit and Delete Buttons Container
             var buttonsDiv = document.createElement('div');
             buttonsDiv.style.display = 'flex';
             buttonsDiv.style.justifyContent = 'space-between';
@@ -342,10 +326,77 @@ function displayEntries() {
             buttonsDiv.appendChild(deleteBtn);
 
             entryDiv.appendChild(buttonsDiv);
-
             entriesContainer.appendChild(entryDiv);
         })(i);
     }
+}
+
+function sendSelectedEntries() {
+    var selectedEntries = [];
+    var checkboxes = document.querySelectorAll('.entry-checkbox:checked');
+
+    // Collect selected entries
+    checkboxes.forEach(function(checkbox) {
+        var entryIndex = checkbox.getAttribute('data-index');
+        selectedEntries.push(entries[entryIndex]);
+    });
+
+    if (selectedEntries.length === 0) {
+        alert('Please select at least one entry to send.');
+        return;
+    }
+
+    var emailContent = formatEmailContent(selectedEntries);
+
+    var mailtoLink = "mailto:?subject=Selected Work Entries&body=" + encodeURIComponent(emailContent);
+    window.location.href = mailtoLink;
+}
+
+function formatEmailContent(selectedEntries) {
+    var emailBody = "Here are the selected work entries:\n\n";
+
+    selectedEntries.forEach(function(entry) {
+        emailBody += `Project: ${entry.projectName}\n`;
+        emailBody += `Client: ${entry.clientName}\n`;
+        emailBody += `Date: ${entry.date}\n`;
+        if (entry.hourlyRate > 0) {
+            emailBody += `Hourly Rate: $${entry.hourlyRate.toFixed(2)}\n`;
+        }
+        if (entry.tookLunch === 'yes') {
+            emailBody += `Lunch Break: ${entry.lunchDuration} minutes\n`;
+        }
+        emailBody += `Total Work Time: ${entry.totalWorkDuration.toFixed(2)} hours\n`;
+        emailBody += `SHOP Time: ${entry.shopDuration.toFixed(2)} hours\n`;
+        emailBody += `JOB SITE Time: ${entry.jobsiteDuration.toFixed(2)} hours\n`;
+        emailBody += `Earnings: $${entry.earnings.toFixed(2)}\n`;
+
+        if (entry.notes) {
+            emailBody += `Notes: ${entry.notes}\n`;
+        }
+
+        emailBody += "Work Segments:\n";
+        entry.workSegments.forEach(function(segment) {
+            emailBody += `    ${segment.workType.toUpperCase()}: ${segment.startTime} - ${segment.endTime}\n`;
+        });
+
+        if (entry.tasks.length > 0) {
+            emailBody += "Tasks:\n";
+            entry.tasks.forEach(function(task) {
+                emailBody += `    ${task}\n`;
+            });
+        }
+
+        if (entry.materials.length > 0) {
+            emailBody += "Materials:\n";
+            entry.materials.forEach(function(material) {
+                emailBody += `    ${material.name}: ${material.quantity}\n`;
+            });
+        }
+
+        emailBody += "\n--------------------------\n";
+    });
+
+    return emailBody;
 }
 
 function clearForm() {
@@ -382,18 +433,18 @@ function createDeleteButton(onClick) {
 function calculateWorkDuration(startTime, endTime, lunchDuration) {
     var start = parseTime(startTime);
     var end = parseTime(endTime);
-    var duration = (end - start) / (1000 * 60); // Duration in minutes
+    var duration = (end - start) / (1000 * 60);
 
     if (duration <= 0) {
-        return -1; // Error: end time is before start time
+        return -1;
     }
 
     duration -= lunchDuration;
     if (duration < 0) {
-        return -1; // Error: lunch duration exceeds work duration
+        return -1;
     }
 
-    return duration / 60; // Return duration in hours
+    return duration / 60;
 }
 
 function parseTime(timeString) {
@@ -408,7 +459,6 @@ function parseTime(timeString) {
     return date;
 }
 
-// Function to update existing entries (for backward compatibility)
 function updateEntries() {
     for (var i = 0; i < entries.length; i++) {
         if (typeof entries[i].totalWorkDuration === 'undefined') {
@@ -430,7 +480,6 @@ function updateEntries() {
     saveEntriesToLocalStorage();
 }
 
-// Function to clear all entries
 function clearAllEntries() {
     if (confirm('Are you sure you want to delete all entries?')) {
         entries = [];
@@ -439,10 +488,8 @@ function clearAllEntries() {
     }
 }
 
-// Function to edit an entry
 function editEntry(index) {
     var entry = entries[index];
-    // Populate the form with the entry's data
     document.getElementById('date').value = entry.date;
     document.getElementById('hourlyRate').value = entry.hourlyRate;
     document.getElementById('tookLunch').value = entry.tookLunch;
@@ -458,69 +505,7 @@ function editEntry(index) {
     displayTasks();
     displayMaterials();
 
-    // Remove the entry being edited
     entries.splice(index, 1);
     saveEntriesToLocalStorage();
     displayEntries();
-}
-
-function sendSelectedEntries() {
-    var selectedEntries = [];
-    var checkboxes = document.querySelectorAll('.entry-checkbox:checked');
-
-    checkboxes.forEach(function(checkbox) {
-        var entryIndex = checkbox.getAttribute('data-index');
-        selectedEntries.push(entries[entryIndex]);
-    });
-
-    if (selectedEntries.length === 0) {
-        alert('Please select at least one entry to send.');
-        return;
-    }
-
-    var emailContent = formatEmailContent(selectedEntries);
-
-    var mailtoLink = "mailto:?subject=Selected Work Entries&body=" + encodeURIComponent(emailContent);
-    window.location.href = mailtoLink;
-}
-
-function formatEmailContent(selectedEntries) {
-    var emailBody = "Here are the selected work entries:\n\n";
-    selectedEntries.forEach(function(entry) {
-        emailBody += `Project: ${entry.projectName}\nClient: ${entry.clientName}\nDate: ${entry.date}\n`;
-        if (entry.hourlyRate > 0) {
-            emailBody += `Hourly Rate: $${entry.hourlyRate.toFixed(2)}\n`;
-        }
-        if (entry.tookLunch === 'yes') {
-            emailBody += `Lunch Break: ${entry.lunchDuration} minutes\n`;
-        }
-        emailBody += `Total Work Time: ${entry.totalWorkDuration.toFixed(2)} hours\n`;
-        emailBody += `SHOP Time: ${entry.shopDuration.toFixed(2)} hours\n`;
-        emailBody += `JOB SITE Time: ${entry.jobsiteDuration.toFixed(2)} hours\n`;
-        emailBody += `Earnings: $${entry.earnings.toFixed(2)}\n`;
-        emailBody += `Notes: ${entry.notes}\n`;
-        emailBody += `Work Segments:\n`;
-
-        entry.workSegments.forEach(function(segment) {
-            emailBody += `    ${segment.workType.toUpperCase()}: ${segment.startTime} - ${segment.endTime}\n`;
-        });
-
-        if (entry.tasks.length > 0) {
-            emailBody += "Tasks:\n";
-            entry.tasks.forEach(function(task) {
-                emailBody += `    ${task}\n`;
-            });
-        }
-
-        if (entry.materials.length > 0) {
-            emailBody += "Materials:\n";
-            entry.materials.forEach(function(material) {
-                emailBody += `    ${material.name}: ${material.quantity}\n`;
-            });
-        }
-
-        emailBody += "\n--------------------------\n";
-    });
-
-    return emailBody;
 }
