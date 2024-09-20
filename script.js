@@ -212,10 +212,12 @@ function displayEntries() {
             var entryDiv = document.createElement('div');
             entryDiv.className = 'entry-item';
 
+            // Checkbox for selecting entries
             var checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.className = 'entry-checkbox';
             checkbox.setAttribute('data-index', index);
+            checkbox.style.marginRight = '10px'; // Adding space between checkbox and text
             entryDiv.appendChild(checkbox);
 
             var h3 = document.createElement('h3');
