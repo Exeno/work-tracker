@@ -212,6 +212,12 @@ function displayEntries() {
             var entryDiv = document.createElement('div');
             entryDiv.className = 'entry-item';
 
+            var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'entry-checkbox';
+            checkbox.setAttribute('data-index', index);
+            entryDiv.appendChild(checkbox);
+
             var h3 = document.createElement('h3');
             h3.textContent = 'Project: ' + entry.projectName;
             entryDiv.appendChild(h3);
@@ -454,4 +460,65 @@ function editEntry(index) {
     entries.splice(index, 1);
     saveEntriesToLocalStorage();
     displayEntries();
+}
+
+function sendSelectedEntries() {
+    var selectedEntries = [];
+    var checkboxes = document.querySelectorAll('.entry-checkbox:checked');
+
+    checkboxes.forEach(function(checkbox) {
+        var entryIndex = checkbox.getAttribute('data-index');
+        selectedEntries.push(entries[entryIndex]);
+    });
+
+    if (selectedEntries.length === 0) {
+        alert('Please select at least one entry to send.');
+        return;
+    }
+
+    var emailContent = formatEmailContent(selectedEntries);
+
+    var mailtoLink = "mailto:?subject=Selected Work Entries&body=" + encodeURIComponent(emailContent);
+    window.location.href = mailtoLink;
+}
+
+function formatEmailContent(selectedEntries) {
+    var emailBody = "Here are the selected work entries:\n\n";
+    selectedEntries.forEach(function(entry) {
+        emailBody += `Project: ${entry.projectName}\nClient: ${entry.clientName}\nDate: ${entry.date}\n`;
+        if (entry.hourlyRate > 0) {
+            emailBody += `Hourly Rate: $${entry.hourlyRate.toFixed(2)}\n`;
+        }
+        if (entry.tookLunch === 'yes') {
+            emailBody += `Lunch Break: ${entry.lunchDuration} minutes\n`;
+        }
+        emailBody += `Total Work Time: ${entry.totalWorkDuration.toFixed(2)} hours\n`;
+        emailBody += `SHOP Time: ${entry.shopDuration.toFixed(2)} hours\n`;
+        emailBody += `JOB SITE Time: ${entry.jobsiteDuration.toFixed(2)} hours\n`;
+        emailBody += `Earnings: $${entry.earnings.toFixed(2)}\n`;
+        emailBody += `Notes: ${entry.notes}\n`;
+        emailBody += `Work Segments:\n`;
+
+        entry.workSegments.forEach(function(segment) {
+            emailBody += `    ${segment.workType.toUpperCase()}: ${segment.startTime} - ${segment.endTime}\n`;
+        });
+
+        if (entry.tasks.length > 0) {
+            emailBody += "Tasks:\n";
+            entry.tasks.forEach(function(task) {
+                emailBody += `    ${task}\n`;
+            });
+        }
+
+        if (entry.materials.length > 0) {
+            emailBody += "Materials:\n";
+            entry.materials.forEach(function(material) {
+                emailBody += `    ${material.name}: ${material.quantity}\n`;
+            });
+        }
+
+        emailBody += "\n--------------------------\n";
+    });
+
+    return emailBody;
 }
