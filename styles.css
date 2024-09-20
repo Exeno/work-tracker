@@ -87,7 +87,6 @@ a {
 }
 .button.clear-all {
     background-color: #6c757d;
-    margin-bottom: 20px; /* Added margin to move it higher */
 }
 .button.clear-all:hover {
     background-color: #5a6268;
@@ -120,25 +119,27 @@ a {
     font-weight: bold;
 }
 
-/* Responsive adjustments for mobile */
+/* Checkbox Style */
+.entry-checkbox {
+    margin-right: 10px;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+}
+
+/* Responsive adjustments */
 @media (max-width: 600px) {
-    .container {
-        padding: 10px;
-    }
+    .entry-form label,
     .entry-form input,
-    .entry-form textarea,
-    .entry-form select {
-        font-size: 18px;
-        padding: 12px;
+    .entry-form button,
+    .entry-form textarea {
+        font-size: 16px;
     }
     .button {
-        padding: 16px;
-        font-size: 18px;
+        font-size: 16px;
     }
-    .entry-list {
-        padding: 0 10px;
-    }
-    .entry-item {
-        padding: 15px;
+    .entry-checkbox {
+        width: 18px;
+        height: 18px;
     }
 }
