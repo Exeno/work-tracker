@@ -133,6 +133,10 @@ function saveEntry() {
     var lunchDuration = 0;
     var hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
 
+    if (isNaN(hourlyRate) || hourlyRate <= 0) {
+        hourlyRate = 0; // Hourly rate is optional, default to 0 if not provided
+    }
+
     if (tookLunch === 'yes') {
         lunchDuration = parseInt(document.getElementById('lunchDuration').value);
         if (isNaN(lunchDuration) || lunchDuration <= 0 || lunchDuration > 180) {
@@ -173,10 +177,7 @@ function saveEntry() {
         return;
     }
 
-    var earnings = 0;
-    if (!isNaN(hourlyRate) && hourlyRate > 0) {
-        earnings = totalWorkDuration * hourlyRate;
-    }
+    var earnings = totalWorkDuration * hourlyRate;
 
     var entry = {
         id: Date.now(),
@@ -211,11 +212,6 @@ function displayEntries() {
             var entryDiv = document.createElement('div');
             entryDiv.className = 'entry-item';
 
-            var checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'entry-checkbox';
-            entryDiv.appendChild(checkbox);
-
             var h3 = document.createElement('h3');
             h3.textContent = 'Project: ' + entry.projectName;
             entryDiv.appendChild(h3);
@@ -228,9 +224,11 @@ function displayEntries() {
             dateP.textContent = 'Date: ' + entry.date;
             entryDiv.appendChild(dateP);
 
-            var hourlyRateP = document.createElement('p');
-            hourlyRateP.textContent = 'Hourly Rate: $' + entry.hourlyRate.toFixed(2);
-            entryDiv.appendChild(hourlyRateP);
+            if (entry.hourlyRate > 0) {
+                var hourlyRateP = document.createElement('p');
+                hourlyRateP.textContent = 'Hourly Rate: $' + entry.hourlyRate.toFixed(2);
+                entryDiv.appendChild(hourlyRateP);
+            }
 
             if (entry.tookLunch === 'yes') {
                 var lunchP = document.createElement('p');
@@ -297,6 +295,7 @@ function displayEntries() {
                 entryDiv.appendChild(materialsH4);
 
                 var materialsUl = document.createElement('ul');
+                materialsUl.className = 'materials';
                 for (var k = 0; k < entry.materials.length; k++) {
                     var material = entry.materials[k];
                     var li = document.createElement('li');
@@ -340,75 +339,6 @@ function displayEntries() {
         })(i);
     }
 }
-
-function sendEmail() {
-    var email = document.getElementById('emailAddress').value;
-    if (!email) {
-        alert('Please enter a valid email address.');
-        return;
-    }
-
-    var selectedEntries = [];
-    var checkboxes = document.querySelectorAll('.entry-checkbox');
-    checkboxes.forEach(function(checkbox, index) {
-        if (checkbox.checked) {
-            selectedEntries.push(entries[index]);
-        }
-    });
-
-    if (selectedEntries.length === 0) {
-        alert('Please select at least one entry to send.');
-        return;
-    }
-
-    function formatEntriesForEmail(entries) {
-    let content = "Here are the selected work entries:\n\n";
-
-    entries.forEach(function (entry) {
-        content += `Project: ${entry.projectName}\n`;
-        content += `Client: ${entry.clientName}\n`;
-        content += `Date: ${entry.date}\n`;
-
-        if (!isNaN(entry.hourlyRate) && entry.hourlyRate > 0) {
-            content += `Hourly Rate: $${entry.hourlyRate.toFixed(2)}\n`;
-        }
-
-        if (entry.tookLunch === 'yes') {
-            content += `Lunch Break: ${entry.lunchDuration} minutes\n`;
-        }
-
-        content += `Total Work Time: ${entry.totalWorkDuration.toFixed(2)} hours\n`;
-        content += `SHOP Time: ${entry.shopDuration.toFixed(2)} hours\n`;
-        content += `JOB SITE Time: ${entry.jobsiteDuration.toFixed(2)} hours\n`;
-
-        if (entry.earnings > 0) {
-            content += `Earnings: $${entry.earnings.toFixed(2)}\n`;
-        }
-
-        content += `Notes: ${entry.notes || 'None'}\n`;
-
-        content += `\nWork Segments:\n`;
-        entry.workSegments.forEach(function (segment) {
-            content += `    ${segment.workType.toUpperCase()}: ${segment.startTime} - ${segment.endTime}\n`;
-        });
-
-        content += `\nTasks:\n`;
-        entry.tasks.forEach(function (task) {
-            content += `    • ${task}\n`;
-        });
-
-        content += `\nMaterials:\n`;
-        entry.materials.forEach(function (material) {
-            content += `    • ${material.name}: ${material.quantity}\n`;
-        });
-
-        content += "\n--------------------------\n\n";
-    });
-
-    return content;
-}
-
-
 
 function clearForm() {
     document.getElementById('date').value = '';
