@@ -361,27 +361,37 @@ function sendEmail() {
         return;
     }
 
-    var emailContent = formatEntriesForEmail(selectedEntries);
-    window.open('mailto:' + email + '?subject=Work Entries&body=' + encodeURIComponent(emailContent));
-}
-
-function formatEntriesForEmail(entries) {
-    var content = 'Here are the selected work entries:\n\n';
+    function formatEntriesForEmail(entries) {
+    var content = "Here are the selected work entries:\n\n";
+    
     entries.forEach(function(entry) {
-        content += 'Project: ' + entry.projectName + '\n';
-        content += 'Client: ' + entry.clientName + '\n';
-        content += 'Date: ' + entry.date + '\n';
-        content += 'Total Work Time: ' + entry.totalWorkDuration.toFixed(2) + ' hours\n';
+        content += `Project: ${entry.projectName}\n`;
+        content += `Client: ${entry.clientName}\n`;
+        content += `Date: ${entry.date}\n`;
+        content += `Total Work Time: ${entry.totalWorkDuration.toFixed(2)} hours\n`;
         if (entry.earnings) {
-            content += 'Earnings: $' + entry.earnings.toFixed(2) + '\n';
+            content += `Earnings: $${entry.earnings.toFixed(2)}\n`;
         }
-        content += 'Tasks: ' + entry.tasks.join(', ') + '\n';
-        content += 'Materials: ' + entry.materials.map(material => material.name + ' (Qty: ' + material.quantity + ')').join(', ') + '\n';
-        content += 'Notes: ' + entry.notes + '\n';
-        content += '--------------------------\n';
+        content += `Notes: ${entry.notes || "None"}\n\n`;
+
+        // Add tasks
+        content += "Tasks:\n";
+        entry.tasks.forEach(task => {
+            content += `• ${task}\n`;
+        });
+        
+        // Add materials
+        content += "\nMaterials:\n";
+        entry.materials.forEach(material => {
+            content += `• ${material.name} (Qty: ${material.quantity})\n`;
+        });
+        
+        content += "--------------------------\n\n";
     });
+
     return content;
 }
+
 
 function clearForm() {
     document.getElementById('date').value = '';
