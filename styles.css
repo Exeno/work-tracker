@@ -6,12 +6,12 @@ body {
     background-color: #f0f2f5;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align items to the top */
+    align-items: flex-start;
     min-height: 100vh;
     color: #333;
-    padding: 20px 10px; /* Added top padding and side padding for better spacing */
+    padding: 20px 10px;
     box-sizing: border-box;
-    overflow-x: hidden; /* Prevents horizontal overflow */
+    overflow-x: hidden;
 }
 
 h1, h2, h3, h4 {
@@ -127,17 +127,15 @@ a {
 /* Ensure the form is always fully visible and the page scrolls */
 body, html {
     height: 100%;
-    overflow: auto; /* Allow vertical scrolling if necessary */
+    overflow: auto;
 }
 
-/* Ensure buttons and form elements are comfortable to use on mobile */
 button, input, textarea, select {
     font-size: 16px;
     padding: 12px;
 }
 
 @media (max-width: 600px) {
-    /* Ensure the form remains fully visible on smaller devices */
     .container {
         width: 100%;
         padding: 15px;
