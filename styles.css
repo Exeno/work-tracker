@@ -1,4 +1,8 @@
-/* General Styles */
+/* Reset some default styles */
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -10,47 +14,35 @@ body {
     min-height: 100vh;
     color: #333;
     padding: 20px 10px;
-    box-sizing: border-box;
     overflow-x: hidden;
 }
 
-h1, h2, h3, h4 {
-    color: #333;
-}
-
-a {
-    color: #007BFF;
-    text-decoration: none;
-}
-
-/* Container */
+/* Container for the entire app */
 .container {
     width: 100%;
-    max-width: 600px;
+    max-width: 800px;
     background-color: #ffffff;
-    padding: 20px;
-    margin: 0 auto;
+    padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Header */
+/* Header styling */
 .header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .header h1 {
-    font-size: 24px;
+    font-size: 32px;
     margin: 0;
-    padding: 0;
     color: #007BFF;
 }
 
-/* Entry Form */
+/* Entry Form Styling */
 .entry-form label {
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 15px;
     display: block;
 }
 
@@ -58,11 +50,12 @@ a {
 .entry-form textarea,
 .entry-form select {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-top: 5px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 16px;
 }
 
 .entry-form textarea {
@@ -70,7 +63,7 @@ a {
     height: 100px;
 }
 
-/* Buttons */
+/* Buttons Styling */
 .button {
     padding: 12px 20px;
     background-color: #007BFF;
@@ -78,11 +71,11 @@ a {
     border: none;
     cursor: pointer;
     margin-top: 10px;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 16px;
     transition: background-color 0.3s;
     width: 100%;
-    box-sizing: border-box;
+    max-width: 200px;
 }
 
 .button:hover {
@@ -105,48 +98,133 @@ a {
     background-color: #5a6268;
 }
 
-/* Entry List */
-.entry-list {
-    margin-top: 20px;
+.button.send-entries {
+    background-color: #28a745;
+}
+
+.button.send-entries:hover {
+    background-color: #218838;
+}
+
+/* Work Segments Styling */
+.work-segments-list,
+.tasks-list,
+.materials-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.work-segments-list li,
+.tasks-list li,
+.materials-list li {
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.work-segments-list li span,
+.tasks-list li span,
+.materials-list li span {
+    flex-grow: 1;
+}
+
+.work-segments-list li button,
+.tasks-list li button,
+.materials-list li button {
+    background-color: transparent;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Entry List Styling */
+.entry-list h2 {
+    margin-bottom: 20px;
+    color: #007BFF;
+}
+
+.buttons-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 .entry-item {
-    background-color: #fff;
+    background-color: #ffffff;
     padding: 20px;
     margin-bottom: 20px;
-    border-radius: 8px;
     border-left: 5px solid #007BFF;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.entry-item h3 {
+    margin: 0 0 10px 0;
+    color: #007BFF;
+}
+
+.entry-item p {
+    margin: 5px 0;
+}
+
+.entry-item ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.entry-item ul li {
+    background-color: #f8f9fa;
+    padding: 6px 10px;
+    margin-bottom: 4px;
+    border-radius: 4px;
 }
 
 /* Checkbox Styling */
 .entry-checkbox {
     margin-right: 10px;
+    transform: scale(1.5);
 }
 
-/* Ensure the form is always fully visible and the page scrolls */
-body, html {
-    height: 100%;
-    overflow: auto;
-}
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .buttons-group {
+        flex-direction: column;
+    }
 
-button, input, textarea, select {
-    font-size: 16px;
-    padding: 12px;
-}
-
-@media (max-width: 600px) {
-    .container {
+    .buttons-group .button {
         width: 100%;
-        padding: 15px;
-        margin: 0;
+        margin-bottom: 10px;
+    }
+
+    .buttons-group .button:last-child {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 28px;
+    }
+
+    .entry-form h2 {
+        font-size: 24px;
+    }
+
+    .entry-list h2 {
+        font-size: 24px;
     }
 
     .button {
-        font-size: 16px;
+        font-size: 14px;
+        padding: 10px 16px;
     }
 
-    h1 {
-        font-size: 22px;
+    .entry-item {
+        padding: 15px;
     }
 }

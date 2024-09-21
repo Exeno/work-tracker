@@ -8,77 +8,93 @@
 </head>
 <body>
 
-<div class="header">
-    <h1>Work Tracker</h1>
-</div>
-
-<div class="container">
-    <div class="entry-form">
-        <h2>Add New Work Entry</h2>
-
-        <label for="date">Date:</label>
-        <input type="date" id="date">
-
-        <label for="projectName">Project Name:</label>
-        <input type="text" id="projectName" placeholder="Enter the project name">
-
-        <label for="clientName">Work Code (#XXXX):</label>
-        <input type="text" id="clientName" placeholder="#1234" maxlength="5">
-
-        <h3>Work Segments</h3>
-        <div id="workSegmentsContainer">
-            <label for="workType">Work Type:</label>
-            <select id="workType">
-                <option value="jobsite">JOB SITE</option>
-                <option value="shop">SHOP</option>
-            </select>
-
-            <label for="segmentStartTime">Start Time:</label>
-            <input type="time" id="segmentStartTime">
-
-            <label for="segmentEndTime">End Time:</label>
-            <input type="time" id="segmentEndTime">
-
-            <!-- Button to add the work segment manually -->
-            <button class="button" onclick="addWorkSegment()">Add Work Segment</button>
-
-            <!-- Check In/Check Out buttons -->
-            <button class="button" id="checkInButton" onclick="checkIn()">Check In</button>
-            <button class="button" id="checkOutButton" style="display: none;" onclick="checkOut()">Check Out</button>
-
-            <ul id="workSegmentsList"></ul>
+    <div class="container">
+        <div class="header">
+            <h1>Work Tracker</h1>
         </div>
 
-        <h3>Tasks</h3>
-        <div id="tasksContainer">
-            <input type="text" id="taskDescription" placeholder="Task description">
-            <button class="button" onclick="addTask()">Add Task</button>
-            <ul id="tasksList"></ul>
+        <div class="entry-form">
+            <h2>Add New Work Entry</h2>
+
+            <!-- Date Field -->
+            <label for="date">Date:</label>
+            <input type="date" id="date" required>
+
+            <!-- Project Name Field -->
+            <label for="projectName">Project Name:</label>
+            <input type="text" id="projectName" placeholder="Enter the project name" required>
+
+            <!-- Work Code Field -->
+            <label for="workCode">Work Code (#XXXX):</label>
+            <input type="text" id="workCode" placeholder="#1234" maxlength="5" required pattern="#\d{4}">
+
+            <!-- Work Segments Section -->
+            <h3>Work Segments</h3>
+            <div id="workSegmentsContainer">
+                <label for="workType">Work Type:</label>
+                <select id="workType">
+                    <option value="jobsite">JOB SITE</option>
+                    <option value="shop">SHOP</option>
+                </select>
+
+                <!-- Check In/Check Out Buttons -->
+                <div class="check-in-out">
+                    <button class="button" id="checkInButton" onclick="checkIn()">Check In</button>
+                    <button class="button" id="checkOutButton" style="display: none;" onclick="checkOut()">Check Out</button>
+                </div>
+
+                <!-- Manual Add Work Segment -->
+                <div class="manual-segment">
+                    <label for="segmentStartTime">Start Time:</label>
+                    <input type="time" id="segmentStartTime">
+    
+                    <label for="segmentEndTime">End Time:</label>
+                    <input type="time" id="segmentEndTime">
+    
+                    <button class="button" onclick="addWorkSegment()">Add Work Segment</button>
+                </div>
+
+                <ul id="workSegmentsList"></ul>
+            </div>
+
+            <!-- Tasks Section -->
+            <h3>Tasks</h3>
+            <div id="tasksContainer">
+                <input type="text" id="taskDescription" placeholder="Task description">
+                <button class="button" onclick="addTask()">Add Task</button>
+                <ul id="tasksList"></ul>
+            </div>
+
+            <!-- Materials Section -->
+            <h3>Materials</h3>
+            <div id="materialsContainer">
+                <input type="text" id="materialName" placeholder="Material name">
+                <input type="number" id="materialQuantity" placeholder="Quantity" min="1">
+                <button class="button" onclick="addMaterial()">Add Material</button>
+                <ul id="materialsList"></ul>
+            </div>
+
+            <!-- Notes Section -->
+            <label for="notes">Notes:</label>
+            <textarea id="notes" placeholder="Enter any additional notes here..."></textarea>
+
+            <!-- Save Entry Button -->
+            <button class="button" onclick="saveEntry()">Save Work Entry</button>
         </div>
 
-        <h3>Materials</h3>
-        <div id="materialsContainer">
-            <input type="text" id="materialName" placeholder="Material name">
-            <input type="number" id="materialQuantity" placeholder="Quantity" min="1">
-            <button class="button" onclick="addMaterial()">Add Material</button>
-            <ul id="materialsList"></ul>
+        <!-- Work Entries Section -->
+        <div class="entry-list">
+            <h2>Work Entries</h2>
+            <div class="buttons-group">
+                <button class="button clear-all" onclick="clearAllEntries()">Clear All Entries</button>
+                <button class="button send-entries" onclick="sendSelectedEntries()">Send Selected Entries</button>
+            </div>
+            <div id="entriesContainer"></div>
         </div>
-
-        <label for="notes">Notes:</label>
-        <textarea id="notes" placeholder="Enter any additional notes here..."></textarea>
-
-        <button class="button" onclick="saveEntry()">Save Work Entry</button>
     </div>
 
-    <div class="entry-list">
-        <h2>Work Entries</h2>
-        <button class="button clear-all" onclick="clearAllEntries()">Clear All Entries</button>
-        <button class="button" onclick="sendSelectedEntries()">Send Selected Entries</button>
-        <div id="entriesContainer"></div>
-    </div>
-</div>
-
-<script src="script.js"></script>
+    <!-- JavaScript File -->
+    <script src="script.js"></script>
 
 </body>
 </html>
