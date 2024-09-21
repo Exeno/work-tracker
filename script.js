@@ -86,6 +86,7 @@ function addWorkSegment() {
         return;
     }
 
+    // Validate that end time is after start time
     var duration = calculateWorkDuration(segmentStartTime, segmentEndTime, 0);
     if (duration < 0) {
         alert('End time must be after start time.');
@@ -101,6 +102,7 @@ function addWorkSegment() {
 
     displayWorkSegments();
 
+    // Clear input fields
     document.getElementById('segmentStartTime').value = '';
     document.getElementById('segmentEndTime').value = '';
 }
@@ -123,66 +125,13 @@ function displayWorkSegments() {
 }
 
 function saveEntry() {
-    var date = document.getElementById('date').value;
-    var projectName = document.getElementById('projectName').value.trim();
-    var clientName = document.getElementById('clientName').value.trim();
-    var notes = document.getElementById('notes').value.trim();
-    var tookLunch = document.getElementById('tookLunch').value;
-    var lunchDuration = 0;
-    var hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
-
-    if (tookLunch === 'yes') {
-        lunchDuration = parseInt(document.getElementById('lunchDuration').value);
-        if (isNaN(lunchDuration) || lunchDuration <= 0 || lunchDuration > 180) {
-            alert('Please enter a valid lunch duration (1-180 minutes).');
-            return;
-        }
-    }
-
-    if (!date || !projectName || !clientName) {
-        alert('Please fill in all required fields.');
-        return;
-    }
-
-    if (workSegments.length === 0) {
-        alert('Please add at least one work segment.');
-        return;
-    }
-
-    var totalWorkDuration = 0;
-    var shopDuration = 0;
-    var jobsiteDuration = 0;
-
-    for (var i = 0; i < workSegments.length; i++) {
-        var segment = workSegments[i];
-        if (segment.workType === 'shop') {
-            shopDuration += segment.duration;
-        } else if (segment.workType === 'jobsite') {
-            jobsiteDuration += segment.duration;
-        }
-    }
-
-    totalWorkDuration = shopDuration + jobsiteDuration;
-    totalWorkDuration -= lunchDuration / 60;
-
-    var earnings = totalWorkDuration * hourlyRate;
-
-    var entry = {
-        id: Date.now(),
-        date: date,
-        tookLunch: tookLunch,
-        lunchDuration: lunchDuration,
-        projectName: projectName,
-        clientName: clientName,
-        notes: notes,
-        hourlyRate: hourlyRate,
-        workSegments: JSON.parse(JSON.stringify(workSegments)),
+    let entry = {
+        date: document.getElementById('date').value,
+        location: document.getElementById('location').value,
         tasks: tasks.slice(),
         materials: materials.slice(),
-        totalWorkDuration: totalWorkDuration,
-        shopDuration: shopDuration,
-        jobsiteDuration: jobsiteDuration,
-        earnings: earnings
+        workSegments: JSON.parse(JSON.stringify(workSegments)),
+        notes: document.getElementById('notes').value
     };
 
     entries.push(entry);
@@ -200,12 +149,6 @@ function displayEntries() {
             var entryDiv = document.createElement('div');
             entryDiv.className = 'entry-item';
 
-            var checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'entry-checkbox';
-            checkbox.setAttribute('data-index', index);
-            entryDiv.appendChild(checkbox);
-
             var h3 = document.createElement('h3');
             h3.textContent = 'Project: ' + entry.projectName;
             entryDiv.appendChild(h3);
@@ -217,18 +160,6 @@ function displayEntries() {
             var dateP = document.createElement('p');
             dateP.textContent = 'Date: ' + entry.date;
             entryDiv.appendChild(dateP);
-
-            if (entry.hourlyRate > 0) {
-                var hourlyRateP = document.createElement('p');
-                hourlyRateP.textContent = 'Hourly Rate: $' + entry.hourlyRate.toFixed(2);
-                entryDiv.appendChild(hourlyRateP);
-            }
-
-            if (entry.tookLunch === 'yes') {
-                var lunchP = document.createElement('p');
-                lunchP.textContent = 'Lunch Break: ' + entry.lunchDuration + ' minutes';
-                entryDiv.appendChild(lunchP);
-            }
 
             var totalWorkP = document.createElement('p');
             totalWorkP.className = 'total-work-time';
@@ -243,15 +174,9 @@ function displayEntries() {
             jobsiteWorkP.textContent = 'JOB SITE Time: ' + entry.jobsiteDuration.toFixed(2) + ' hours';
             entryDiv.appendChild(jobsiteWorkP);
 
-            var earningsP = document.createElement('p');
-            earningsP.textContent = 'Earnings: $' + entry.earnings.toFixed(2);
-            entryDiv.appendChild(earningsP);
-
-            if (entry.notes) {
-                var notesP = document.createElement('p');
-                notesP.textContent = 'Notes: ' + entry.notes;
-                entryDiv.appendChild(notesP);
-            }
+            var notesP = document.createElement('p');
+            notesP.textContent = 'Notes: ' + entry.notes;
+            entryDiv.appendChild(notesP);
 
             var segmentsH4 = document.createElement('h4');
             segmentsH4.textContent = 'Work Segments:';
@@ -326,82 +251,14 @@ function displayEntries() {
             buttonsDiv.appendChild(deleteBtn);
 
             entryDiv.appendChild(buttonsDiv);
+
             entriesContainer.appendChild(entryDiv);
         })(i);
     }
 }
 
-function sendSelectedEntries() {
-    var selectedEntries = [];
-    var checkboxes = document.querySelectorAll('.entry-checkbox:checked');
-
-    // Collect selected entries
-    checkboxes.forEach(function(checkbox) {
-        var entryIndex = checkbox.getAttribute('data-index');
-        selectedEntries.push(entries[entryIndex]);
-    });
-
-    if (selectedEntries.length === 0) {
-        alert('Please select at least one entry to send.');
-        return;
-    }
-
-    var emailContent = formatEmailContent(selectedEntries);
-
-    var mailtoLink = "mailto:?subject=Selected Work Entries&body=" + encodeURIComponent(emailContent);
-    window.location.href = mailtoLink;
-}
-
-function formatEmailContent(selectedEntries) {
-    var emailBody = "Here are the selected work entries:\n\n";
-
-    selectedEntries.forEach(function(entry) {
-        emailBody += `Project: ${entry.projectName}\n`;
-        emailBody += `Client: ${entry.clientName}\n`;
-        emailBody += `Date: ${entry.date}\n`;
-        if (entry.hourlyRate > 0) {
-            emailBody += `Hourly Rate: $${entry.hourlyRate.toFixed(2)}\n`;
-        }
-        if (entry.tookLunch === 'yes') {
-            emailBody += `Lunch Break: ${entry.lunchDuration} minutes\n`;
-        }
-        emailBody += `Total Work Time: ${entry.totalWorkDuration.toFixed(2)} hours\n`;
-        emailBody += `SHOP Time: ${entry.shopDuration.toFixed(2)} hours\n`;
-        emailBody += `JOB SITE Time: ${entry.jobsiteDuration.toFixed(2)} hours\n`;
-        emailBody += `Earnings: $${entry.earnings.toFixed(2)}\n`;
-
-        if (entry.notes) {
-            emailBody += `Notes: ${entry.notes}\n`;
-        }
-
-        emailBody += "Work Segments:\n";
-        entry.workSegments.forEach(function(segment) {
-            emailBody += `    ${segment.workType.toUpperCase()}: ${segment.startTime} - ${segment.endTime}\n`;
-        });
-
-        if (entry.tasks.length > 0) {
-            emailBody += "Tasks:\n";
-            entry.tasks.forEach(function(task) {
-                emailBody += `    ${task}\n`;
-            });
-        }
-
-        if (entry.materials.length > 0) {
-            emailBody += "Materials:\n";
-            entry.materials.forEach(function(material) {
-                emailBody += `    ${material.name}: ${material.quantity}\n`;
-            });
-        }
-
-        emailBody += "\n--------------------------\n";
-    });
-
-    return emailBody;
-}
-
 function clearForm() {
     document.getElementById('date').value = '';
-    document.getElementById('hourlyRate').value = '';
     document.getElementById('tookLunch').value = 'no';
     toggleLunchDuration();
     document.getElementById('lunchDuration').value = '30';
@@ -433,18 +290,18 @@ function createDeleteButton(onClick) {
 function calculateWorkDuration(startTime, endTime, lunchDuration) {
     var start = parseTime(startTime);
     var end = parseTime(endTime);
-    var duration = (end - start) / (1000 * 60);
+    var duration = (end - start) / (1000 * 60); // Duration in minutes
 
     if (duration <= 0) {
-        return -1;
+        return -1; // Error: end time is before start time
     }
 
     duration -= lunchDuration;
     if (duration < 0) {
-        return -1;
+        return -1; // Error: lunch duration exceeds work duration
     }
 
-    return duration / 60;
+    return duration / 60; // Return duration in hours
 }
 
 function parseTime(timeString) {
@@ -459,13 +316,11 @@ function parseTime(timeString) {
     return date;
 }
 
+// Function to update existing entries (for backward compatibility)
 function updateEntries() {
     for (var i = 0; i < entries.length; i++) {
         if (typeof entries[i].totalWorkDuration === 'undefined') {
             entries[i].totalWorkDuration = 0;
-        }
-        if (typeof entries[i].earnings === 'undefined') {
-            entries[i].earnings = 0;
         }
         if (typeof entries[i].shopDuration === 'undefined') {
             entries[i].shopDuration = 0;
@@ -480,6 +335,7 @@ function updateEntries() {
     saveEntriesToLocalStorage();
 }
 
+// Function to clear all entries
 function clearAllEntries() {
     if (confirm('Are you sure you want to delete all entries?')) {
         entries = [];
@@ -488,10 +344,11 @@ function clearAllEntries() {
     }
 }
 
+// Function to edit an entry
 function editEntry(index) {
     var entry = entries[index];
+    // Populate the form with the entry's data
     document.getElementById('date').value = entry.date;
-    document.getElementById('hourlyRate').value = entry.hourlyRate;
     document.getElementById('tookLunch').value = entry.tookLunch;
     toggleLunchDuration();
     document.getElementById('lunchDuration').value = entry.lunchDuration || 30;
@@ -505,6 +362,7 @@ function editEntry(index) {
     displayTasks();
     displayMaterials();
 
+    // Remove the entry being edited
     entries.splice(index, 1);
     saveEntriesToLocalStorage();
     displayEntries();
