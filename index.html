@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work Tracker - Check In/Out System</title>
+    <title>Work Tracker</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -27,10 +27,31 @@
                 <option value="shop">SHOP</option>
             </select>
 
+            <label for="segmentStartTime">Start Time:</label>
+            <input type="time" id="segmentStartTime">
+
+            <label for="segmentEndTime">End Time:</label>
+            <input type="time" id="segmentEndTime">
+
             <button class="button" id="checkInButton" onclick="checkIn()">Check In</button>
             <button class="button" id="checkOutButton" style="display: none;" onclick="checkOut()">Check Out</button>
 
             <ul id="workSegmentsList"></ul>
+        </div>
+
+        <h3>Tasks</h3>
+        <div id="tasksContainer">
+            <input type="text" id="taskDescription" placeholder="Task description">
+            <button class="button" onclick="addTask()">Add Task</button>
+            <ul id="tasksList"></ul>
+        </div>
+
+        <h3>Materials</h3>
+        <div id="materialsContainer">
+            <input type="text" id="materialName" placeholder="Material name">
+            <input type="number" id="materialQuantity" placeholder="Quantity" min="1">
+            <button class="button" onclick="addMaterial()">Add Material</button>
+            <ul id="materialsList"></ul>
         </div>
 
         <label for="projectName">Project Name:</label>
@@ -54,5 +75,6 @@
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>

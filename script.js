@@ -66,6 +66,46 @@ function calculateWorkDuration(start, end) {
     return duration.toFixed(2);
 }
 
+function addTask() {
+    var taskDescription = document.getElementById('taskDescription').value.trim();
+    if (taskDescription) {
+        tasks.push(taskDescription);
+        document.getElementById('taskDescription').value = '';
+        displayTasks();
+    }
+}
+
+function displayTasks() {
+    var tasksList = document.getElementById('tasksList');
+    tasksList.innerHTML = '';
+    for (var i = 0; i < tasks.length; i++) {
+        var li = document.createElement('li');
+        li.textContent = tasks[i];
+        tasksList.appendChild(li);
+    }
+}
+
+function addMaterial() {
+    var materialName = document.getElementById('materialName').value.trim();
+    var materialQuantity = parseInt(document.getElementById('materialQuantity').value);
+    if (materialName && materialQuantity > 0) {
+        materials.push({ name: materialName, quantity: materialQuantity });
+        document.getElementById('materialName').value = '';
+        document.getElementById('materialQuantity').value = '';
+        displayMaterials();
+    }
+}
+
+function displayMaterials() {
+    var materialsList = document.getElementById('materialsList');
+    materialsList.innerHTML = '';
+    for (var i = 0; i < materials.length; i++) {
+        var li = document.createElement('li');
+        li.textContent = materials[i].name + ' (Qty: ' + materials[i].quantity + ')';
+        materialsList.appendChild(li);
+    }
+}
+
 function saveEntry() {
     var date = document.getElementById('date').value;
     var projectName = document.getElementById('projectName').value.trim();
@@ -84,6 +124,8 @@ function saveEntry() {
         clientName: clientName,
         notes: notes,
         workSegments: workSegments.slice(),
+        tasks: tasks.slice(),
+        materials: materials.slice(),
     };
 
     entries.push(entry);
@@ -164,7 +206,7 @@ function sendSelectedEntries() {
             return segment.workType.toUpperCase() + ': ' + segment.startTime + ' - ' + segment.endTime + ' (' + segment.duration + ' hours)';
         }).join('\n');
 
-        return 'Project: ' + entry.projectName + '\nClient: ' + entry.clientName + '\nDate: ' + entry.date + '\nWork Segments:\n' + segments + '\nNotes: ' + (entry.notes || 'No additional notes') + '\n';
+        return 'Project: ' + entry.projectName + '\nClient: ' + entry.clientName + '\nDate: ' + entry.date + '\nWork Segments:\n' + segments + '\nTasks:\n' + (entry.tasks.join('\n') || 'No tasks') + '\nMaterials:\n' + (entry.materials.map(m => m.name + ' (Qty: ' + m.quantity + ')').join('\n') || 'No materials') + '\nNotes: ' + (entry.notes || 'No additional notes') + '\n';
     }).join('\n--------------------------\n');
 
     window.location.href = 'mailto:?subject=Work Entries&body=' + encodeURIComponent(emailContent);
@@ -176,7 +218,11 @@ function clearForm() {
     document.getElementById('clientName').value = '';
     document.getElementById('notes').value = '';
     workSegments = [];
+    tasks = [];
+    materials = [];
     displayWorkSegments();
+    displayTasks();
+    displayMaterials();
 }
 
 function clearAllEntries() {
