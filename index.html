@@ -19,6 +19,12 @@
         <label for="date">Date:</label>
         <input type="date" id="date">
 
+        <label for="projectName">Project Name:</label>
+        <input type="text" id="projectName" placeholder="Enter the project name">
+
+        <label for="clientName">Work Code (#XXXX):</label>
+        <input type="text" id="clientName" placeholder="#1234" maxlength="5">
+
         <h3>Work Segments</h3>
         <div id="workSegmentsContainer">
             <label for="workType">Work Type:</label>
@@ -33,6 +39,10 @@
             <label for="segmentEndTime">End Time:</label>
             <input type="time" id="segmentEndTime">
 
+            <!-- Button to add the work segment manually -->
+            <button class="button" onclick="addWorkSegment()">Add Work Segment</button>
+
+            <!-- Check In/Check Out buttons -->
             <button class="button" id="checkInButton" onclick="checkIn()">Check In</button>
             <button class="button" id="checkOutButton" style="display: none;" onclick="checkOut()">Check Out</button>
 
@@ -53,12 +63,6 @@
             <button class="button" onclick="addMaterial()">Add Material</button>
             <ul id="materialsList"></ul>
         </div>
-
-        <label for="projectName">Project Name:</label>
-        <input type="text" id="projectName">
-
-        <label for="clientName">Client Name:</label>
-        <input type="text" id="clientName">
 
         <label for="notes">Notes:</label>
         <textarea id="notes" placeholder="Enter any additional notes here..."></textarea>
