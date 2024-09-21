@@ -6,11 +6,12 @@ body {
     background-color: #f0f2f5;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Changed from center to flex-start to prevent vertical cutoff */
+    align-items: flex-start; /* Align items to the top */
     min-height: 100vh;
     color: #333;
-    padding-top: 20px; /* Added padding to avoid top cutoff */
+    padding: 20px 10px; /* Added top padding and side padding for better spacing */
     box-sizing: border-box;
+    overflow-x: hidden; /* Prevents horizontal overflow */
 }
 
 h1, h2, h3, h4 {
@@ -123,16 +124,31 @@ a {
     margin-right: 10px;
 }
 
-/* Responsive adjustments */
+/* Ensure the form is always fully visible and the page scrolls */
+body, html {
+    height: 100%;
+    overflow: auto; /* Allow vertical scrolling if necessary */
+}
+
+/* Ensure buttons and form elements are comfortable to use on mobile */
+button, input, textarea, select {
+    font-size: 16px;
+    padding: 12px;
+}
+
 @media (max-width: 600px) {
-    .entry-form label,
-    .entry-form input,
-    .entry-form button,
-    .entry-form textarea {
-        font-size: 16px;
+    /* Ensure the form remains fully visible on smaller devices */
+    .container {
+        width: 100%;
+        padding: 15px;
+        margin: 0;
     }
 
     .button {
         font-size: 16px;
+    }
+
+    h1 {
+        font-size: 22px;
     }
 }
