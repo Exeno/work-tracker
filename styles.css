@@ -6,9 +6,11 @@ body {
     background-color: #f0f2f5;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    align-items: flex-start; /* Changed from center to flex-start to prevent vertical cutoff */
+    min-height: 100vh;
     color: #333;
+    padding-top: 20px; /* Added padding to avoid top cutoff */
+    box-sizing: border-box;
 }
 
 h1, h2, h3, h4 {
@@ -22,7 +24,7 @@ a {
 
 /* Container */
 .container {
-    width: 90%;
+    width: 100%;
     max-width: 600px;
     background-color: #ffffff;
     padding: 20px;
