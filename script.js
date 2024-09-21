@@ -114,7 +114,6 @@ function parseTime(timeString) {
 }
 
 // Rest of the code for tasks, materials, saveEntry, etc.
-// Keeping the same functions like addTask, addMaterial, saveEntry, etc.
 
 function saveEntry() {
     var date = document.getElementById('date').value;
@@ -189,7 +188,59 @@ function displayEntries() {
         }
         entryDiv.appendChild(segmentsUl);
 
+        // Restore edit and delete buttons
+        var buttonsDiv = document.createElement('div');
+        buttonsDiv.style.display = 'flex';
+        buttonsDiv.style.justifyContent = 'space-between';
+        buttonsDiv.style.marginTop = '10px';
+
+        var editBtn = document.createElement('button');
+        editBtn.className = 'button';
+        editBtn.textContent = 'Edit Entry';
+        editBtn.style.width = '48%';
+        editBtn.onclick = function() {
+            editEntry(i);
+        };
+        buttonsDiv.appendChild(editBtn);
+
+        var deleteBtn = document.createElement('button');
+        deleteBtn.className = 'button delete';
+        deleteBtn.textContent = 'Delete Entry';
+        deleteBtn.style.width = '48%';
+        deleteBtn.onclick = function() {
+            deleteEntry(i);
+        };
+        buttonsDiv.appendChild(deleteBtn);
+
+        entryDiv.appendChild(buttonsDiv);
+
         entriesContainer.appendChild(entryDiv);
+    }
+}
+
+function editEntry(index) {
+    var entry = entries[index];
+    document.getElementById('date').value = entry.date;
+    document.getElementById('projectName').value = entry.projectName;
+    document.getElementById('clientName').value = entry.clientName;
+    document.getElementById('notes').value = entry.notes;
+    workSegments = entry.workSegments.slice();
+    tasks = entry.tasks.slice();
+    materials = entry.materials.slice();
+    displayWorkSegments();
+    displayTasks();
+    displayMaterials();
+
+    entries.splice(index, 1);
+    saveEntriesToLocalStorage();
+    displayEntries();
+}
+
+function deleteEntry(index) {
+    if (confirm('Are you sure you want to delete this entry?')) {
+        entries.splice(index, 1);
+        saveEntriesToLocalStorage();
+        displayEntries();
     }
 }
 
